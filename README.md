@@ -35,7 +35,6 @@ The project leverages publicly available network security datasets:
 - [DDoS Attack Dataset](https://www.kaggle.com/datasets/devendra416/ddos-datasets)  
 
 ## Repository Structure  
-## Repository Structure
 
 - 📂 cyber-sentinel-security
   - 📂 .github/workflows   → GitHub Actions for CI/CD
