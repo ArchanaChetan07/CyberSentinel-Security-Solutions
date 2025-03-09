@@ -35,4 +35,32 @@ The project leverages publicly available network security datasets:
 - [DDoS Attack Dataset](https://www.kaggle.com/datasets/devendra416/ddos-datasets)  
 
 ## Repository Structure  
+📂 cyber-sentinel-security
+│── 📂 .github/workflows        # GitHub Actions for CI/CD
+│── 📂 .vscode                  # VS Code settings
+│── 📂 app                      # Streamlit/Flask/Django App for UI
+│── 📂 data                     # Raw & Processed Data
+│    │── raw/                   # Original downloaded datasets
+│    │── processed/              # Preprocessed data
+│── 📂 models                   # Trained ML models and pipelines
+│    │── rcf_model.pkl          # Random Cut Forest model
+│    │── autoencoder_model.h5   # Autoencoder model
+│    │── isolation_forest.pkl   # Isolation Forest model
+│    │── hybrid_model.pkl       # Hybrid rule-based & ML model
+│── 📂 scripts                  # Python scripts for feature engineering & model training
+│    │── preprocessing.py       # Data cleaning & transformation
+│    │── feature_engineering.py # Feature extraction
+│    │── train_model.py         # Training ML models
+│    │── evaluate_model.py      # Performance metrics calculation
+│── 📂 monitoring               # Model monitoring & logging setup
+│── 📂 infrastructure           # Cloud & DevOps setup (Kubernetes, Docker, Terraform)
+│── 📂 dashboards               # Visualization of anomaly detection results
+│── 📂 reports                  # Documentation, findings & final reports
+│── 📂 tests                    # Unit tests for ML models & pipeline
+│── 📄 .gitignore               # Ignore unnecessary files
+│── 📄 Dockerfile               # Containerization setup
+│── 📄 README.md                # Project documentation
+│── 📄 requirements.txt         # Python dependencies
+│── 📄 setup.py                 # Project setup script
+│── 📄 test.py                  # Testing scripts
 
