@@ -1,0 +1,72 @@
+# Data Handling
+pandas
+numpy
+
+# Data Visualization
+matplotlib
+seaborn
+
+# Machine Learning & Anomaly Detection
+scikit-learn
+tensorflow
+torch
+xgboost
+lightgbm
+catboost
+h2o
+joblib
+
+# Anomaly Detection Models
+pyod
+random-cut-forest
+statsmodels
+
+# Feature Engineering
+scipy
+featuretools
+category_encoders
+
+# Model Evaluation & Performance Metrics
+scikit-plot
+
+# Hyperparameter Tuning
+optuna
+bayesian-optimization
+
+# Data Streaming & Processing
+kafka-python
+pyspark
+dask
+
+# Web Scraping & Threat Intelligence (Optional)
+beautifulsoup4
+requests
+
+# Deployment & API Integration
+flask
+fastapi
+uvicorn
+
+# Cloud & Containerization
+boto3
+kubernetes
+docker
+
+# Security & Compliance
+cryptography
+
+# Logging & Monitoring
+loguru
+
+# Natural Language Processing (for Security Reports & Threat Intelligence)
+nltk
+spacy
+
+# Database Connectivity
+sqlalchemy
+psycopg2
+pymongo
+
+# System & Utility Tools
+tqdm
+pyyaml
