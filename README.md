@@ -32,7 +32,9 @@ Analyze network traffic data using advanced anomaly detection techniques to dete
 The project leverages publicly available network security datasets:  
 - [UNSW-NB15 Dataset](https://www.kaggle.com/datasets/mrwellsdavid/unsw-nb15/data)  
 - [CIC-DDoS2019 Dataset](https://www.kaggle.com/datasets/aymenabb/ddos-evaluation-dataset-cic-ddos2019)  
-- [DDoS Attack Dataset](https://www.kaggle.com/datasets/devendra416/ddos-datasets)  
+- [DDoS Attack Dataset](https://www.kaggle.com/datasets/devendra416/ddos-datasets)
+
+ **S3 Storage Bucket**: [`s3://msads-508-sp25-team6`](https://aws.amazon.com/s3/)  
 
 ## Repository Structure  
 
