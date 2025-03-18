@@ -64,3 +64,31 @@ The project leverages publicly available network security datasets:
   - 📄 requirements.txt   → Python dependencies
   - 📄 setup.py   → Project setup script
   - 📄 test.py   → Testing scripts
+
+
+---
+
+## **Key Features**
+🔹 **Machine Learning Models**:  
+- **Random Cut Forest (RCF)** for unsupervised anomaly detection  
+- **Autoencoder Neural Networks** for reconstructing normal traffic patterns  
+- **Isolation Forest** for detecting rare anomalies  
+- **Hybrid Model** combining ML with rule-based filtering  
+
+🔹 **Feature Engineering**:
+- **Packet Analysis**: Max/Min/Mean lengths, TCP Flags, Header Information  
+- **Traffic Flow Metrics**: Flow Bytes/s, Flow Packets/s, Inter-arrival times  
+- **Network Anomaly Indicators**: Unusual protocol behavior, Asymmetric traffic  
+
+🔹 **Real-time Anomaly Detection**:
+- **Streaming Data Processing** using Apache Kafka  
+- **Automated Alerts & Logging** for detected threats  
+
+🔹 **Scalability & Deployment**:
+- **Docker & Kubernetes** for containerization  
+- **AWS S3 + SageMaker** for model training  
+- **CI/CD pipelines** with GitHub Actions  
+
+---
+
+  
