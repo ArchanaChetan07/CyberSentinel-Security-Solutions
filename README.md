@@ -1,96 +1,96 @@
 # CyberSentinel Security Solutions - Anomaly Detection System
+**Authors:** Archana Suresh Patil & Tommy Barron  
+**Course:** ADS 508: Data Science with Cloud Computing  
+**Instructor:** Sean Coyne  
+**Institution:** University of San Diego - Shirley Marcos School of Engineering  
+**Date:** April 14, 2025  
 
-## Company Overview  
-**Company Name:** CyberSentinel Security Solutions  
-**Industry:** Cyber Security / Tech  
-**Company Size:** Small (100 Employees)  
+## Project Overview
 
-## Abstract  
-CyberSentinel Security Solutions specializes in identifying cyber threats, including unauthorized access and DDoS attacks. The company aims to leverage machine learning-based anomaly detection to identify network intrusions and potential cybersecurity threats for its clients.
+CyberSentinel Security Solutions presents a real-time **Anomaly Detection System** to detect **DDoS attacks** and other cybersecurity threats using machine learning. The solution integrates AWS Cloud services with advanced modeling techniques to analyze network traffic patterns and provide high-accuracy threat detection.
 
-## Problem Statement  
-With the rise in sophisticated cyber-attacks, CyberSentinel Security Solutions clients have been experiencing frequent security incidents, including unauthorized access, DDoS attacks, and insider threats. Given the company's history of providing cybersecurity solutions for enterprises and government agencies, it is critical to create a robust anomaly detection system for customers.  
+## Problem Statement
 
-Traditional rule-based intrusion detection systems fail to keep up with evolving attack patterns, leading to delayed threat response and increased financial loss.  
-
-### **Project Goal**  
-Analyze network traffic data using advanced anomaly detection techniques to detect and mitigate security threats in real time.
-
-## Goals  
- Create an anomaly detection system for real-time threat detection.  
- Identify unusual patterns in network traffic that may indicate cyber-attacks.  
- Reduce false positive rates in existing security monitoring solutions.  
- Improve incident response time by providing actionable alerts.  
- Utilize machine learning models that scale efficiently with large datasets.  
-
-## Non-Goals  
- Developing a fully automated security system without human intervention.  
- Preventing all types of cyber threats (focus is on anomaly detection).  
- Addressing compliance and regulatory requirements in-depth (handled separately by legal teams).  
-
-## Data Sources  
-The project leverages publicly available network security datasets:  
-- [UNSW-NB15 Dataset](https://www.kaggle.com/datasets/mrwellsdavid/unsw-nb15/data)  
-- [CIC-DDoS2019 Dataset](https://www.kaggle.com/datasets/aymenabb/ddos-evaluation-dataset-cic-ddos2019)  
-- [DDoS Attack Dataset](https://www.kaggle.com/datasets/devendra416/ddos-datasets)
-
- **S3 Storage Bucket**: [`s3://msads-508-sp25-team6`](https://aws.amazon.com/s3/)  
-
-## Repository Structure  
-
-- 📂 cyber-sentinel-security
-  - 📂 .github/workflows   → GitHub Actions for CI/CD
-  - 📂 .vscode   → VS Code settings
-  - 📂 app   → Streamlit/Flask/Django App for UI
-  - 📂 data   → Raw & Processed Data
-    - 📂 raw   → Original downloaded datasets
-    - 📂 processed   → Preprocessed data
-  - 📂 models   → Trained ML models and pipelines
-    - 📄 rcf_model.pkl   → Random Cut Forest model
-    - 📄 autoencoder_model.h5   → Autoencoder model
-    - 📄 isolation_forest.pkl   → Isolation Forest model
-    - 📄 hybrid_model.pkl   → Hybrid rule-based & ML model
-  - 📂 scripts   → Python scripts for feature engineering & model training
-    - 📄 preprocessing.py   → Data cleaning & transformation
-    - 📄 feature_engineering.py   → Feature extraction
-    - 📄 train_model.py   → Training ML models
-    - 📄 evaluate_model.py   → Performance metrics calculation
-  - 📂 monitoring   → Model monitoring & logging setup
-  - 📂 infrastructure   → Cloud & DevOps setup (Kubernetes, Docker, Terraform)
-  - 📂 dashboards   → Visualization of anomaly detection results
-  - 📂 reports   → Documentation, findings & final reports
-  - 📂 tests   → Unit tests for ML models & pipeline
-  - 📄 .gitignore   → Ignore unnecessary files
-  - 📄 Dockerfile   → Containerization setup
-  - 📄 README.md   → Project documentation
-  - 📄 requirements.txt   → Python dependencies
-  - 📄 setup.py   → Project setup script
-  - 📄 test.py   → Testing scripts
-
+Traditional rule-based systems are ineffective against evolving cyber threats. Our project addresses this gap by building a scalable ML pipeline to identify abnormal patterns in real-time traffic data, focusing on:
+- DDoS attacks
+- Unauthorized access
+- Insider threats
 
 ---
 
-## **Key Features**
-🔹 **Machine Learning Models**:  
-- **Random Cut Forest (RCF)** for unsupervised anomaly detection  
-- **Autoencoder Neural Networks** for reconstructing normal traffic patterns  
-- **Isolation Forest** for detecting rare anomalies  
-- **Hybrid Model** combining ML with rule-based filtering  
+## Goals
 
-🔹 **Feature Engineering**:
-- **Packet Analysis**: Max/Min/Mean lengths, TCP Flags, Header Information  
-- **Traffic Flow Metrics**: Flow Bytes/s, Flow Packets/s, Inter-arrival times  
-- **Network Anomaly Indicators**: Unusual protocol behavior, Asymmetric traffic  
-
-🔹 **Real-time Anomaly Detection**:
-- **Streaming Data Processing** using Apache Kafka  
-- **Automated Alerts & Logging** for detected threats  
-
-🔹 **Scalability & Deployment**:
-- **Docker & Kubernetes** for containerization  
-- **AWS S3 + SageMaker** for model training  
-- **CI/CD pipelines** with GitHub Actions  
+- Detect anomalies with **≥ 90% accuracy**
+- Maintain **< 5% false positive rate**
+- Reduce alert response time by **30%**
 
 ---
 
-  
+## Non-Goals
+
+- Creating a fully autonomous security system
+- Addressing legal/regulatory compliance
+- Covering all types of cyberattacks
+
+---
+
+## Data Sources
+
+- **UNSW-NB15 Dataset** ([Kaggle](https://www.kaggle.com/datasets/mrwellsdavid/unsw-nb15))
+- **CIC-DDoS 2019 Dataset** ([Kaggle](https://www.kaggle.com/datasets/aymenabb/ddos-evaluation-dataset-cic-ddos2019))
+- **Canadian Institute for Cybersecurity (2016-2018)** ([Kaggle](https://www.kaggle.com/datasets/devendra416/ddos-datasets))
+
+Stored and processed using:
+- **AWS S3**: `s3://msads-508-sp25-team6`
+- **SageMaker Studio**
+
+---
+
+##  Models & Techniques
+
+- **Random Cut Forest**
+- **Autoencoder Neural Networks**
+- **Isolation Forest**
+- **XGBoost**
+- **Dimensionality Reduction** (PCA, t-SNE, LDA)
+- **SMOTE** for class balancing
+- One-hot encoding and custom feature engineering
+
+---
+
+##  Cloud Infrastructure
+
+- **AWS SageMaker:** Custom bring-your-own-script (Scikit-learn, Keras, XGBoost)
+- **Instance types:** `ml.m5.2xlarge`
+- **Model tracking:** CloudWatch & MLflow
+- **Real-time streaming (planned):** Apache Kafka
+
+---
+
+## Evaluation Metrics
+
+- Precision, Recall, F1-Score
+- ROC-AUC
+- Reconstruction Error (Autoencoders)
+- Outlier Score Distribution
+
+---
+
+## Privacy & Security
+
+- No PII/PHI data used
+- Anonymized network traffic
+- Ethical concerns noted and mitigated
+- Bias handled via class weighting and sampling
+
+---
+
+## Future Enhancements
+
+- Integrate **AWS Redshift** for storage efficiency
+- Add features like:
+  - Entropy detection
+  - Geo-IP mapping
+  - Burst packet monitoring
+- Introduce **hybrid model pipelines** with KNN & SGD
+- Feedback loop from analysts for continuous improvement
