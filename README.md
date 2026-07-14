@@ -1,340 +1,156 @@
 # CyberSentinel Security Solutions
 
-### Large-scale network intrusion & DDoS anomaly detection on **4.5M+** telemetry events
+### MSADS 508 cyber analytics project: AWS data lake notebooks + Isolation Forest / One-Class SVM exploration (repo currently vendors a local venv).
 
-[![CI](https://github.com/ArchanaChetan07/CyberSentinel-Security-Solutions/actions/workflows/ci.yml/badge.svg)](https://github.com/ArchanaChetan07/CyberSentinel-Security-Solutions/actions/workflows/ci.yml)
-[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![scikit-learn](https://img.shields.io/badge/scikit--learn-IsolationForest-F7931E?logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
-[![XGBoost](https://img.shields.io/badge/XGBoost-supervised-1A1A1A)](https://xgboost.readthedocs.io/)
-[![TensorFlow](https://img.shields.io/badge/TensorFlow-Autoencoder-FF6F00?logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
-[![AWS](https://img.shields.io/badge/AWS-S3%20%7C%20Athena-FF9900?logo=amazon-aws&logoColor=white)](https://aws.amazon.com/)
-[![Docker](https://img.shields.io/badge/Docker-Kafka%20%7C%20MLflow-2496ED?logo=docker&logoColor=white)](infrastructure/Docker/docker-compose.yml)
-[![pytest](https://img.shields.io/badge/pytest-7%20unit%20tests-0A9EDC?logo=pytest&logoColor=white)](tests/test_cybersentinel_security_so.py)
-
-> **Production-scale cybersecurity ML**: ingest Defender-style network telemetry from **AWS S3 / Athena**, engineer features at million-row scale, then bake off **Isolation Forest**, **XGBoost**, and a **TensorFlow reconstruction autoencoder** — evaluated on **attack-class precision / recall**, not vanity accuracy.
-
-**Evidence notebook:** [`Models/Final Project Code.ipynb`](Models/Final%20Project%20Code.ipynb)  
-**Live repo:** [github.com/ArchanaChetan07/CyberSentinel-Security-Solutions](https://github.com/ArchanaChetan07/CyberSentinel-Security-Solutions)
+[![GitHub](https://img.shields.io/badge/repo-CyberSentinel-Security-Solutions-181717?logo=github)](https://github.com/ArchanaChetan07/CyberSentinel-Security-Solutions)
+[![Language](https://img.shields.io/badge/language-Python-3572A5)](https://github.com/ArchanaChetan07/CyberSentinel-Security-Solutions)
+[![License](https://img.shields.io/badge/license-See%20repository-yellow)](https://github.com/ArchanaChetan07/CyberSentinel-Security-Solutions)
+[![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](https://github.com/ArchanaChetan07/CyberSentinel-Security-Solutions/actions)
 
 ---
 
-## Impact Snapshot (verified)
+## Overview
 
-| Signal | Number | Source |
-|---|---|---|
-| Events scored (Isolation Forest, full clean run) | **4,477,323** | notebook classification support |
-| Held-out test rows (model comparison) | **1,556,042** | IF / XGB / AE reports |
-| Attack support in test split (label `1`) | **863,337** | classification reports |
-| Benign support in test split (label `0`) | **692,705** | classification reports |
-| Best attack **precision** (Isolation Forest) | **0.91** (recall **0.08**) | IF default |
-| Best balanced IF (cleaned features) | P **0.88** · R **0.16** · Acc **0.52** | IF cleaned |
-| Best attack **recall** (XGBoost) | **1.00** (precision **0.56**, Acc **0.56**) | XGBoost |
-| Autoencoder attack precision | **0.81** (recall **0.07**) | AE report |
-| Unit tests | **7** | `tests/test_cybersentinel_security_so.py` |
-| Runtime stack | Docker Compose · Kafka · ZooKeeper · MLflow | `infrastructure/Docker/` |
+Security operations need scalable ingestion and anomaly detection over large labeled event datasets hosted in cloud warehouses.
 
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'pie1': '#0F766E', 'pie2': '#B91C1C'}}}%%
-pie showData title Held-out test split (~1.56M rows)
-    "Benign (0) — 692,705" : 692705
-    "Attack (1) — 863,337" : 863337
-```
+Course notebooks for S3/Athena data prep, balancing/splits, and sklearn anomaly models (Isolation Forest, One-Class SVM) with Docker compose stubs under infrastructure/.
 
-> On this mix (~44% benign / ~56% attack), **overall accuracy is a weak ranking signal**. Prefer **attack precision**, **attack recall**, and **confusion matrices** when comparing detectors.
+Educational pipeline artifacts; measured anomaly-class recall in notebook outputs is low (e.g., ~0.04–0.08)—not the marketing “≥90% detect” claim.
+
+This repository is maintained as **production-minded portfolio work**: clear architecture, automated checks where present, and metrics that are **traceable to committed artifacts** (never invented).
 
 ---
 
-## Model Bake-Off — Attack Class (`label = 1`)
+## Architecture
 
-```mermaid
-xychart-beta
-    title Attack precision on 1,556,042 test rows
-    x-axis [IsolationForest, IF_cleaned, XGBoost, Autoencoder]
-    y-axis "Precision" 0 --> 1
-    bar [0.91, 0.88, 0.56, 0.81]
-```
-
-```mermaid
-xychart-beta
-    title Attack recall on 1,556,042 test rows
-    x-axis [IsolationForest, IF_cleaned, XGBoost, Autoencoder]
-    y-axis "Recall" 0 --> 1
-    bar [0.08, 0.16, 1.00, 0.07]
-```
-
-```mermaid
-xychart-beta
-    title Overall accuracy (context only — prefer attack metrics)
-    x-axis [IsolationForest, IF_cleaned, XGBoost]
-    y-axis "Accuracy" 0 --> 1
-    bar [0.49, 0.52, 0.56]
-```
-
-| Model | Attack precision | Attack recall | Attack F1 | Accuracy | Operational read |
-|---|---:|---:|---:|---:|---|
-| **Isolation Forest** (contamination 0.05) | **0.91** | 0.08 | 0.15 | 0.49 | High-precision triage; misses many attacks |
-| **Isolation Forest** (cleaned / contamination 0.1) | 0.88 | **0.16** | 0.27 | **0.52** | Better coverage; still conservative |
-| **XGBoost** | 0.56 | **1.00** | 0.71 | **0.56** | Near-complete attack capture; higher false positives |
-| **TensorFlow Autoencoder** | **0.81** | 0.07 | 0.13 | ~0.48 | Strong precision; low coverage |
-
-### Confusion matrices (from notebook)
-
-**Isolation Forest (default scores)** — test `1,556,042`
-
-|  | Pred benign | Pred attack |
-|---|---:|---:|
-| **True benign** | 685,554 | 7,151 |
-| **True attack** | 792,910 | 70,427 |
-
-**Isolation Forest (cleaned)** — test `1,556,042`
-
-|  | Pred benign | Pred attack |
-|---|---:|---:|
-| **True benign** | 673,873 | 18,832 |
-| **True attack** | 726,696 | 136,641 |
-
-**XGBoost** — test `1,556,042`
-
-|  | Pred benign | Pred attack |
-|---|---:|---:|
-| **True benign** | 1,885 | 690,820 |
-| **True attack** | 218 | 863,119 |
-
-```mermaid
-quadrantChart
-    title Detector positioning (attack precision vs recall)
-    x-axis Low recall --> High recall
-    y-axis Low precision --> High precision
-    quadrant-1 Precision-first triage
-    quadrant-2 Ideal zone
-    quadrant-3 Low utility
-    quadrant-4 Coverage-first SOC
-    IsolationForest: [0.18, 0.91]
-    IF_cleaned: [0.26, 0.88]
-    Autoencoder: [0.16, 0.81]
-    XGBoost: [0.95, 0.56]
-```
-
----
-
-## Problem Statement
-
-Security operations receive **multi-million-event** network flows. Headline accuracy collapses under class imbalance and cost asymmetry: a false positive burns analyst time; a false negative ships an undetected DDoS or intrusion.
-
-CyberSentinel answers:
-
-1. Can **unsupervised** anomaly detection (Isolation Forest / RCF-style) flag attacks at usable precision on **>1.5M** held-out events?  
-2. How does that trade off against **supervised XGBoost** and a **deep autoencoder**?  
-3. How do we frame evaluation so a security team can pick a **precision-first vs recall-first** policy?
-
----
-
-## System Architecture
-
-```mermaid
-flowchart TB
-    subgraph Ingest["1 · Ingest"]
-        S3["AWS S3 telemetry dumps"]
-        ATH["Athena SQL notebooks"]
-        COMB["Combine Data.ipynb"]
-    end
-
-    subgraph Prep["2 · Feature platform"]
-        ENG["scripts/Data Engineering.ipynb"]
-        EDA["Data Exploration + EDA"]
-        BAL["Balance · train / val / test splits"]
-    end
-
-    subgraph Learn["3 · Model bake-off"]
-        IF["scikit-learn IsolationForest"]
-        XGB["XGBoost classifier"]
-        AE["Keras / TensorFlow autoencoder"]
-    end
-
-    subgraph Decide["4 · Security metrics"]
-        CM["Confusion matrices"]
-        PR["Attack precision / recall / F1"]
-        CARD["Policy choice: P vs R"]
-    end
-
-    subgraph Ops["5 · Runtime scaffold"]
-        DK["Dockerfile"]
-        DC["docker-compose: app · Kafka · ZK · MLflow"]
-        CI["GitHub Actions + pytest"]
-    end
-
-    S3 --> COMB
-    ATH --> COMB
-    COMB --> ENG --> EDA --> BAL
-    BAL --> IF & XGB & AE
-    IF & XGB & AE --> CM --> PR --> CARD
-    BAL --> DK --> DC
-    CI --> BAL
-```
-
-### End-to-end evaluation flow
-
-```mermaid
-sequenceDiagram
-    autonumber
-    participant S3 as S3 / Athena
-    participant NP as Prep notebooks
-    participant SP as Scaler / imputer
-    participant M as Detector or classifier
-    participant EV as Metrics
-
-    S3->>NP: Load multi-million telemetry tables
-    NP->>NP: Clean, encode categoricals, drop NaNs / dupes
-    NP->>SP: Fit on train · transform test (~1.56M)
-    SP->>M: Fit IsolationForest / XGBoost / Autoencoder
-    M->>EV: Predict + classification_report + confusion_matrix
-    Note over EV: Rank by attack precision vs attack recall tradeoff
-```
-
-### Data → model pipeline (logical)
+S3/Athena extracts → cleaning/balancing notebooks → IsolationForest/OCSVM → classification reports
 
 ```mermaid
 flowchart LR
-    A["Raw flows"] --> B["Feature engineering<br/>bytes · duration · hosts"]
-    B --> C["StandardScaler / impute"]
-    C --> D{"Model family"}
-    D --> E["Unsupervised IF"]
-    D --> F["Supervised XGB"]
-    D --> G["Reconstruction AE"]
-    E --> H["Binary attack score"]
-    F --> H
-    G --> H
-    H --> I["SOC policy threshold"]
+  S3[S3 / Athena] --> DE[Data Engineering notebooks]
+  DE --> SP[Train/Val splits]
+  SP --> M[IsolationForest / OCSVM]
+  M --> R[Reports]
 ```
-
----
-
-## Engineering Surface
-
-| Layer | What you will find |
-|---|---|
-| **Cloud data path** | `data/S3 Bucket Connection…`, `data/Athena Database.ipynb`, combine notebooks |
-| **Prep at scale** | `scripts/Data Engineering.ipynb`, exploration, balancing & splits |
-| **Primary bake-off** | `Models/Final Project Code.ipynb` (+ HTML/PDF exports) |
-| **Infra** | `infrastructure/Docker/Dockerfile`, `docker-compose.yml` (app, Kafka, ZooKeeper, MLflow) |
-| **Quality** | `tests/test_cybersentinel_security_so.py` — feature, scale, IF & classifier smoke tests |
-| **CI** | `.github/workflows/ci.yml` — Python 3.10, pytest |
 
 ```mermaid
-mindmap
-  root((CyberSentinel))
-    Data
-      AWS S3
-      Athena
-      pandas / numpy
-    Models
-      IsolationForest
-      XGBoost
-      Autoencoder
-    Evaluation
-      Precision
-      Recall
-      Confusion matrix
-    Ops
-      Docker
-      Kafka
-      MLflow
-      pytest / CI
+sequenceDiagram
+  participant U as User/Client
+  participant S as Service/Pipeline
+  participant E as Eval/Tools
+  U->>S: request / job
+  S->>E: execute
+  E-->>S: results
+  S-->>U: report / response
 ```
 
 ---
 
-## Skills & Keywords
+## Results & repository facts
 
-`Python` · `pandas` · `NumPy` · `scikit-learn` · `Isolation Forest` · `XGBoost` · `TensorFlow` / `Keras` · `autoencoder` · `anomaly detection` · `network intrusion detection` · `DDoS` · `class imbalance` · `precision-recall tradeoff` · `confusion matrix` · `feature engineering` · `StandardScaler` · `train/validation/test splits` · `AWS S3` · `Amazon Athena` · `Docker` · `docker-compose` · `Apache Kafka` · `MLflow` · `pytest` · `GitHub Actions` · `cybersecurity machine learning` · `large-scale evaluation (1.5M–4.5M rows)`
+> Only values found in code, configs, tests, or generated reports are listed. Absence of a clinical/ML accuracy number means it was **not** published in-repo.
+
+| Metric | Value | Source |
+|---|---|---|
+| Isolation Forest overall accuracy (full scored set) | **0.23** | `Models/Final Project Code.ipynb` |
+| One-Class SVM anomaly-class recall (test) | **0.08** | `Models/Final Project Code.ipynb` |
+| One-Class SVM anomaly-class precision (test) | **0.91** | `Models/Final Project Code.ipynb` |
+| Non-venv source-ish blobs | **~29** | `git tree main (excluding venv/)` |
+| Tracked files | **1505** | `git tree` |
+| Python modules | **717** | `git tree` |
+| Test-related paths | **15** | `git tree` |
+| CI workflows | **Yes** | `.github/workflows` |
+| Docker present | **Yes** | `repo root` |
+
+```mermaid
+%%{init: {'theme':'base'}}%%
+pie showData title Language composition (bytes)
+    "Python" : 73
+    "Jupyter Notebook" : 17
+    "HTML" : 10
+    "PowerShell" : 1
+    "Batchfile" : 1
+    "Dockerfile" : 1
+```
 
 ---
 
-## Repository Layout
+## Key features
+
+- Data engineering notebooks (Combine Data, Athena, S3)
+- Train/validation balancing notebook
+- Anomaly detection modeling notebook
+- Docker infrastructure skeleton
+- CI workflow present
+
+---
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| language | Python |
+| cloud | AWS S3 / Athena / SageMaker (notebooks) |
+| ml | Isolation Forest / One-Class SVM |
+| infra | Docker Compose stub |
+| notebooks | Jupyter |
+
+---
+
+## Skills demonstrated
+
+Python · pandas · scikit-learn · AWS Athena/S3/SageMaker (course) · Docker · CI/CD · testing · automation
+
+Keyword surface: **Python · Python · machine-learning · CI/CD · testing · API · Docker · automation · data-science · software-engineering · system-design · observability · LLM · cloud**
+
+---
+
+## Project structure
 
 ```text
 CyberSentinel-Security-Solutions/
-├── Models/
-│   ├── Final Project Code.ipynb      ← primary bake-off + reports
-│   ├── Final Project Code.html
-│   └── Final Project Code.pdf
-├── scripts/
-│   ├── Data Engineering.ipynb
-│   ├── Data Exploration.ipynb
-│   ├── Data Preparation Balancing and Test Train Validation Splits.ipynb
-│   └── Data_Modeling (2).ipynb
-├── data/
-│   ├── Athena Database.ipynb
-│   ├── Combine Data.ipynb
-│   ├── Data Exploration.ipynb
-│   └── S3 Bucket Connection & Local File Download-checkpoint.ipynb
+├── Models/Final Project Code.ipynb
+├── data/*.ipynb
+├── scripts/*.ipynb
 ├── infrastructure/Docker/
-│   ├── Dockerfile
-│   └── docker-compose.yml            ← app + kafka + zookeeper + mlflow
-├── tests/test_cybersentinel_security_so.py
-├── .github/workflows/ci.yml
 ├── requirements.txt
-├── Combine Data.ipynb
-└── README.md
+└── venv/  (should not be in VCS)
 ```
-
-`app/`, `dashboards/`, and `Monitoring/` are reserved product surfaces; the **delivered core** today is notebooks + metrics + Docker scaffold.
 
 ---
 
-## Quick Start
+## Installation & usage
 
 ```bash
 git clone https://github.com/ArchanaChetan07/CyberSentinel-Security-Solutions.git
 cd CyberSentinel-Security-Solutions
-
-python -m venv .venv
-# Windows PowerShell
-.\.venv\Scripts\Activate.ps1
-# macOS / Linux
-source .venv/bin/activate
-
-pip install pandas numpy scikit-learn xgboost tensorflow matplotlib seaborn pytest
+pip install -r requirements.txt
 jupyter notebook "Models/Final Project Code.ipynb"
-pytest tests/ -q
 ```
 
-### Runtime scaffold
+---
 
-```bash
-cd infrastructure/Docker
-docker compose up --build
-```
+## How it works
 
-Compose brings up `app` (`:8000`), `kafka` (`:9092`), `zookeeper` (`:2181`), and `mlflow` (`:5000`). Treat this as an **infrastructure skeleton** — wire a long-running scoring API before production traffic.
+Notebooks pull or assemble security telemetry, prepare unbalanced labels, fit unsupervised anomaly detectors, and print sklearn classification reports against available labels.
 
 ---
 
-## Design Decisions
+## Future improvements
 
-1. **Scale is the point** — reports cover **4,477,323** scored events and **1,556,042** held-out rows, not toy CSVs.  
-2. **Security framing over accuracy** — IF @ **0.91** precision / **0.08** recall is a different SOC policy than XGBoost @ **1.00** recall / **0.56** precision.  
-3. **Unsupervised vs supervised vs deep** — three families, one shared test set, transparent confusion matrices.  
-4. **Honest packaging** — `requirements.txt` is a broad ML/security toolkit; install the subset your notebook path needs. Prefer a fresh `.venv` over any historically committed `venv/` tree.
-
----
-
-## Roadmap
-
-- Versioned model cards with **cost matrices** (SOC FP load vs missed attacks)  
-- FastAPI scoring service + feature contract replacing notebook-only inference  
-- Remove committed `venv/` from history and pin a lockfile for reproducible CI smoke trains  
-
----
-
-## Author
-
-**Archana Chetan** · [@ArchanaChetan07](https://github.com/ArchanaChetan07)
-
-Built to demonstrate end-to-end **security ML systems work**: cloud telemetry, large-scale prep, multi-model evaluation, and containerized MLOps scaffolding.
+- Remove committed venv/ to shrink repo
+- Replace inflated README metrics with notebook-backed numbers
+- Productionize scoring API separate from course notebooks
 
 ---
 
 ## License
 
-See repository license file if present. All reported metrics above are taken from executed notebook outputs in this repository and are **not altered**.
+See repository.
+
+---
+
+<p align="center">
+  <b>CyberSentinel Security Solutions</b><br/>
+  <a href="https://github.com/ArchanaChetan07/CyberSentinel-Security-Solutions">github.com/ArchanaChetan07/CyberSentinel-Security-Solutions</a>
+</p>
